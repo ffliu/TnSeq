@@ -1,0 +1,70 @@
+
+rm(list=ls())
+
+source("EM_algorithm_nocov.r")
+## Generate sample data
+dat<-read.table("dat_Mtb_example.txt",header=TRUE)
+
+#### number of normal genes.
+N<-length(unique(dat[dat$gene_type==0,1]))
+#### number of possible insertion site for each of the normal genes
+lengthN<- na.omit(as.numeric( tapply( dat[dat$gene_type==0,1] , dat[dat$gene_type==0,1] ,length) )  )
+pos_pseudo<-which(dat$gene_type==1)
+length_ps<-length(pos_pseudo)
+#### add a column "ord" to denote normal genes ID and use the sampe ID for all the pseudogenes.
+dat$ord<- N+1
+dat$ord[dat$gene_type==0]<-rep( 1:N ,lengthN)
+
+
+## Obtain initial parameter estimates for EM algorithm.
+mu_inits = rep(0, N+1)
+y<-dat$count
+y_numn0_gene<- tapply(  y>0  ,  dat$ord ,sum)
+y_sum_gene<-tapply(  y  ,  dat$ord ,sum)
+
+for(i in 1:(N+1)){
+	score_mug<-function(mu)	{
+		s=y_sum_gene[i]
+		ss=y_numn0_gene[i]
+		s/mu - (1/(1- exp(-mu)))* ss	
+	}
+	
+	if( y_sum_gene[i] <=5) mu_inits[i]==0.01
+	else mu_inits[i]<- uniroot( score_mug ,interval=c(0.001,10000000))$root
+}
+
+p0 <-  (   sum(y==0)-  exp(- mu_inits) %*%   c(lengthN, length_ps) )/ length(y)
+beta_inits <- log(p0/(1-p0))
+
+## Obtain MLE for parameters using EM Algorithm 
+output <- em.algo(mu_inits,beta_inits) 
+## Obtain SD
+#var_dif<-deriv_SD_diff(output$beta,output$mu)
+#est_dif<- as.numeric(output$mu[1:N])-output$mu[N+1] 
+## Using median of pseudogenes (5.5), Obtain SD
+var_dif<-deriv_SD_mu(output$beta[1],output$mu)
+est_dif<- as.numeric(output$mu[1:N])- 5.5
+
+
+res<- matrix(NA,length(var_dif),6)
+res[,1]<-est_dif
+res[,2]<- sqrt(var_dif)
+# p value
+res[,3]<- 2*pnorm(-abs(est_dif/sqrt(var_dif)))
+# q value
+res[,4]<-round(p.adjust(res[,3], "BH"), 4)
+#essential: 1, not significant: 0,  the other side: 2
+res[,5]<-ifelse(res[,4]<=0.05 & res[,1] <=0, 1, 2)
+res[ res[, 4]> 0.05, 5]<- 0
+res[,6]<- as.character(unique(dat[dat$gene_type==0,1]))
+colnames(res)<-c("est","sd","pvalue","qvalue","essentialp05","Gene")
+
+write.csv(res,"EM_res_Mtb_use_median_pseudo.csv",row.names=FALSE)
+
+
+
+
+
+
+
+

@@ -1,0 +1,14 @@
+Package: TnSeq
+Type: Package
+Title: A Zero-Inflated Poisson Model for Insertion Tolerance Analysis of Genes Based on Tn-seq Data.
+Version: 2016.02
+Date: 2016-02-18
+Author: F Liu
+Authors@R: person("F", "Liu", email="pliu@iastate.edu", role=c("aut","cre"))
+Maintainer: Ashton Trey Belew <abelew@gmail.com>
+Description: Use a poisson model for TN-Seq statistics.
+License: GPL-2 | file LICENSE
+Suggests:
+  limma
+VignetteBuilder: knitr
+RoxygenNote: 5.0.1
