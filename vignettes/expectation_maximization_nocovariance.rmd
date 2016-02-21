@@ -1,0 +1,35 @@
+---
+title: "Using TnSeq without a covariance model"
+author: "atb abelew@gmail.com"
+date: "`r Sys.Date()`"
+output: rmarkdown::pdf_document
+vignette: >
+  %\VignetteIndexEntry{no covariance for you}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+# A case study using the EM algorithm and nocov
+
+```{r setting_up}
+
+library(TnSeq)
+datafile = system.file("mtb_example.tsv", package="TnSeq")
+tnseq_df <- read.table(datafile, header=TRUE)
+
+```
+
+# Perform essentiality search
+
+```{r em_essentiality}
+
+tnseq_result <- perform_tnseq_em(tnseq_df)
+tnseq_result <- as.data.frame(tnseq_result)
+summary(tnseq_result)
+hist(x=as.numeric(tnseq_result$est), breaks=40)
+hist(x=as.numeric(tnseq_result$sd), breaks=40)
+hist(x=as.numeric(tnseq_result$pvalue), breaks=40)
+hist(x=as.numeric(tnseq_result$qvalue), breaks=40)
+
+```
+

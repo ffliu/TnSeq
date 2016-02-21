@@ -9,6 +9,6 @@ Maintainer: Ashton Trey Belew <abelew@gmail.com>
 Description: Use a poisson model for TN-Seq statistics.
 License: GPL-2 | file LICENSE
 Suggests:
-  limma
+  stats
 VignetteBuilder: knitr
 RoxygenNote: 5.0.1
