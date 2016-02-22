@@ -1,0 +1,30 @@
+---
+title: "Using TnSeq using some S3 OO methods"
+author: "atb abelew@gmail.com"
+date: "`r Sys.Date()`"
+output: rmarkdown::pdf_document
+vignette: >
+  %\VignetteIndexEntry{TnSeq OO}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+# OO EM
+
+```{r setting_up}
+
+library(TnSeq)
+data_file <- system.file("mtb_example.tsv", package="TnSeq")
+annotation_file <- system.file("mtb_annotation.tsv", package="TnSeq")
+
+```
+
+# Perform essentiality search
+
+```{r em_essentiality}
+
+mtb_tnseq <- TnSeq(data_file, annotation=annotation_file, task="em_nocov")
+mtb_em <- PerformEM(mtb_tnseq)
+mtb_result <- ScoreEM(mtb_em)
+
+```
