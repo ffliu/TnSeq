@@ -422,7 +422,7 @@ perform_tnseq_em <- function(dat, covariance=FALSE) {
 #' @param em_output the result from em
 #' @param sig_cutoff maximum qvalue to accept as 'essential'
 #' @param p_adjust method to use to adjust the pvalues
-#' @result a data frame of 6 columns
+#' @return a data frame of 6 columns
 #' @export
 make_result_df <- function(dat, em_output, sig_cutoff=0.05, p_adjust="BH") {
     regression <- em_output$regression[1]

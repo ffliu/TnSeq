@@ -15,6 +15,9 @@ make_result_df(dat, em_output, sig_cutoff = 0.05, p_adjust = "BH")
 
 \item{p_adjust}{method to use to adjust the pvalues}
 }
+\value{
+a data frame of 6 columns
+}
 \description{
 create a data frame of results from the output of the em algorithm
 }

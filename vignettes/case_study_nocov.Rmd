@@ -1,0 +1,48 @@
+---
+title: "Using TnSeq without a covariance model"
+author: "atb abelew@gmail.com"
+date: "`r Sys.Date()`"
+output: rmarkdown::pdf_document
+vignette: >
+  %\VignetteIndexEntry{no covariance for you}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+# A case study using the EM algorithm and nocov
+
+```{r setting_up}
+
+library(TnSeq)
+datafile = system.file("mtb_example.tsv", package="TnSeq")
+data <- read.table(datafile, header=TRUE)
+
+```
+
+# Play with 'normal' genes
+
+Why do we care if a gene is normal or a pseudogene?
+Wouldn't a pseudogene be a good way to discern 'essential' vs. not essential?
+Also, why wouldn't a 'normal' gene be TRUE in the data file?
+
+```{r normal_genes}
+
+## Count the genes which have 'FALSE' under the gene_type column
+## These, despite FALSE, are 'normal'
+normal_genes <- length(unique(data[data$gene_type==FALSE, 1]))
+pseudo_genes <- length(unique(data[data$gene_type==TRUE, 1]))
+
+## Count the number of possible insertion sites for these genes
+## despite my snarky comments, this is a neat way of calculating this
+sites_by_gene <- na.omit(as.numeric(tapply(data[data$gene_type==FALSE, 1],
+                                           data[data$gene_type==FALSE, 1],
+                                           length)))
+
+## I don't see why we do this yet
+pseudo_gene_positions <- which(data$gene_type==TRUE)
+number_pseudo_positions <- length(pseudo_gene_positions)
+
+
+
+```
+
